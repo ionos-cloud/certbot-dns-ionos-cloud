@@ -3,8 +3,8 @@ from setuptools import find_packages
 
 
 install_requires = [
-    "acme>=0.29.0",
-    "certbot>=0.34.0",
+    "acme>=2.9.0",
+    "certbot>=2.9.0",
     "setuptools",
     "requests",
     #"mock",

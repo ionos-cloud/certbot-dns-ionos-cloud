@@ -57,19 +57,19 @@ class Authenticator(dns_common.DNSAuthenticator):
                                             'not needed when using ionos_token'
                                             .format(credentials.confobj.filename))
         elif not username or not password:
-            raise errors.PluginError('{}:  ionos_username and ionos_password are required when'
+            raise errors.PluginError('{}:  ionos_username and ionos_password are required when '
                                          'ionos_token is not provided'
                                          .format(credentials.confobj.filename))
         
 
     def _perform(self, domain, validation_name, validation):
         self._get_ionos_client().add_txt_record(
-            domain, validation_name, validation, self.ttl
+            domain, validation_name, validation
         )
 
     def _cleanup(self, domain, validation_name, validation):
         self._get_ionos_client().del_txt_record(
-            domain, validation_name, validation, self.ttl
+            domain, validation_name, validation
         )
 
     def _get_ionos_client(self):
@@ -94,7 +94,7 @@ class _IONOSClient(object):
 
         
     def _handle_response(self, resp: requests.Response):
-     if resp.status_code != 200:
+     if resp.status_code != 200 and resp.status_code != 202:
          raise errors.PluginError(
              "Received non OK status from IONOS API {0}".format(resp.status_code)
          )
@@ -108,14 +108,13 @@ class _IONOSClient(object):
     def _get_url(self, action):
         return "{0}?{1}".format(self.endpoint, action)
 
-    def add_txt_record(self, domain, record_name, record_content, record_ttl):
+    def add_txt_record(self, domain, record_name, record_content):
         """
         Add a TXT record using the supplied information.
 
         :param str domain: The domain to use to look up the managed zone.
         :param str record_name: The record name (typically beginning with '_acme-challenge.').
         :param str record_content: The record content (typically the challenge validation).
-        :param int record_ttl: The record TTL (number of seconds that the record may be cached).
         :raises certbot.errors.PluginError: if an error occurs communicating with the IONOS API
         """
         zone_id = self._find_zone_id(domain)
@@ -123,29 +122,28 @@ class _IONOSClient(object):
             raise errors.PluginError("Domain not known")
         logger.debug("domain found: %s with id: %s", domain, zone_id)
         record = self.get_existing_txt_acme_record(zone_id, record_name)
+        record_properties = record["properties"]
         if record is not None:
-            if record["content"] == record_content:
+            if record_properties["content"] == record_content:
                 logger.info("already there, id {0}".format(record["id"]))
                 return
             else:
                 logger.info("update {0}".format(record["id"]))
-                record["content"] = record_content
-                record["ttl"] = record_ttl
+                record_properties["content"] = record_content
                 self._update_txt_record(
                     zone_id, record
                 )
         else:
             logger.info("insert new txt record")
-            self._insert_txt_record(zone_id, record_name, record_content, record_ttl)
+            self._insert_txt_record(zone_id, record_name, record_content)
 
-    def del_txt_record(self, domain, record_name, record_content, record_ttl):
+    def del_txt_record(self, domain, record_name, record_content):
         """
         Delete a TXT record using the supplied information.
 
         :param str domain: The domain to use to look up the managed zone.
         :param str record_name: The record name (typically beginning with '_acme-challenge.').
         :param str record_content: The record content (typically the challenge validation).
-        :param int record_ttl: The record TTL (number of seconds that the record may be cached).
         :raises certbot.errors.PluginError: if an error occurs communicating with the IONOS API
         """
         zone_id = self._find_zone_id(domain)
@@ -153,28 +151,29 @@ class _IONOSClient(object):
             raise errors.PluginError("Domain not known")
         logger.debug("domain found: %s with id: %s", domain, zone_id)
         record = self.get_existing_txt_acme_record(zone_id, record_name)
+        record_properties = record["properties"]
         if record is not None:
-            if record["data"] == record_content:
+            if record_properties["content"] == record_content:
                 logger.debug("delete TXT record: %s", record["id"])
                 self._handle_response(
             requests.delete(dns_api_base_url + "/zones/" + zone_id +"/records/"+record["id"], headers=self.headers))
                 
 
 
-    def _insert_txt_record(self, zone_id, record_name, record_content, record_ttl):
+    def _insert_txt_record(self, zone_id, record_name, record_content):
         new_record = {"properties":{
-                "name":record_name, "type":"TXT", "content":record_content, "ttl":record_ttl}}
+                "name":record_name, "type":"TXT", "content":record_content}}
         
         self._handle_response(
-            requests.post(dns_api_base_url + "/zones/" + zone_id +"/records", json=new_record))
-        logger.debug("create with data: %s", new_record)
+            requests.post(dns_api_base_url + "/zones/" + zone_id +"/records", json=new_record, headers=self.headers))
+        logger.debug("create with payload: %s", new_record)
 
     def _update_txt_record(
         self, zone_id, record
     ):
         self._handle_response(
             requests.put(dns_api_base_url + "/zones/" + zone_id +"/records/"+record["id"], json=record, headers=self.headers))
-        logger.debug("update with data: %s", record)
+        logger.debug("update with payload: %s", record)
 
 
     def _find_zone_id(self, domain):
@@ -216,6 +215,6 @@ class _IONOSClient(object):
         for record_item in records_response["items"]:
             record_item_properties = record_item["properties"]
             if record_item_properties and record_item_properties["name"] == record_name:
-                return record_item_properties
+                return record_item
             
         return None

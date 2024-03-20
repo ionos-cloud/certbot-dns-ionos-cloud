@@ -9,7 +9,7 @@ from certbot.plugins import dns_common
 
 logger = logging.getLogger(__name__)
 
-dns_api_base_url = "https://dev.dns.de-fra.ionos.com"
+dns_api_base_url = "https://dns.de-fra.ionos.com"
 
 
 class Authenticator(dns_common.DNSAuthenticator):
@@ -79,7 +79,7 @@ class _IONOSClient(object):
              "API response with non JSON: {0}".format(resp.text)
          )
 
-    def add_txt_record(self, domain, record_name, record_content):
+    def add_txt_record(self, domain, record_name:str, record_content):
         """
         Add a TXT record using the supplied information.
 
@@ -88,12 +88,13 @@ class _IONOSClient(object):
         :param str record_content: The record content (typically the challenge validation).
         :raises certbot.errors.PluginError: if an error occurs communicating with the IONOS API
         """
-        print("getting started")
+        # because the domain is appended by the API, we remove it from it from the record name
+        record_name_without_domain = record_name.replace("."+domain, "")
         zone_id = self._find_zone_id(domain)
         if zone_id is None:
             raise errors.PluginError("Domain not known")
         logger.debug("domain found: %s with id: %s", domain, zone_id)
-        record = self.get_existing_txt_acme_record(zone_id, record_name)
+        record = self.get_existing_txt_acme_record(zone_id, record_name_without_domain)
         if record is not None:
             record_properties = record["properties"]
             if record_properties["content"] == record_content:
@@ -107,9 +108,9 @@ class _IONOSClient(object):
                 )
         else:
             logger.info("insert new txt record")
-            self._insert_txt_record(zone_id, record_name, record_content)
+            self._insert_txt_record(zone_id, record_name_without_domain, record_content)
 
-    def del_txt_record(self, domain, record_name, record_content):
+    def del_txt_record(self, domain, record_name:str, record_content:str):
         """
         Delete a TXT record using the supplied information.
 
@@ -122,7 +123,7 @@ class _IONOSClient(object):
         if zone_id is None:
             raise errors.PluginError("Domain not known")
         logger.debug("domain found: %s with id: %s", domain, zone_id)
-        record = self.get_existing_txt_acme_record(zone_id, record_name)
+        record = self.get_existing_txt_acme_record(zone_id, record_name.replace("."+domain, ""))
         if record is not None:
             record_properties = record["properties"]
             if record_properties["content"] == record_content:

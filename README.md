@@ -23,14 +23,14 @@ pip install certbot-dns-ionos
 
 | Argument                            | Example     | Description                                                                                                                                                                     |
 |-------------------------------------|-------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--authenticator`                   | dns-ionos       | tells certbot that which plugin use. `dns-ionos` should be used for this plugin.                                                                               | 
+| `--authenticator`                   | dns-ionos       | tells certbot which plugin use. `dns-ionos` should be used for this plugin.                                                                               | 
 | `--dns-ionos-credentials`         | ./credentials.ini | Denotes the directory path to the credentials file. Required. |
 | `--dns-ionos-propagation-seconds` | 120               | Configures the duration in seconds that certbot waits before querying the TXT record. (Default: 120)                                  |
 
 
 # Credentials file:
 
-As mentionned in the previous section, the `--dns-ionos-credentials` needs to point to a ini file containing the IONOS API access token. The file must contain the `ionos_dns_token` key with the value of the access token. 
+As mentionned in the previous section, the `--dns-ionos-credentials` needs to point to an ini file containing the IONOS API access token. The file must contain the `ionos_dns_token` key with the value of the access token. 
 
 ```
 dns_ionos_token=YOUR_API_JWT_ACCESS_TOKEN
@@ -43,7 +43,7 @@ dns_ionos_token=YOUR_API_JWT_ACCESS_TOKEN
 certbot certonly --authenticator dns-ionos --dns-ionos-credentials /path/to/credentials.ini -d example.com
 ```
 
-In the background, The plugin will try to find your zone. If found, it will create a TXT record with for the DNS-01 challenge. At the end of the process, the TLS/SSL certificate is generated and the TXT record is deleted.
+In the background, the plugin will try to find your zone. If found, it will create a TXT record with for the DNS-01 challenge. At the end of the process, the TLS/SSL certificate is generated and the TXT record is deleted.
 
 # Support
 
@@ -61,7 +61,7 @@ After activating the virtual environment, the following command should be used t
 
 Afterwards, any changes made to the plugin will be directly reflected when executing the `certbot certonly --authenticator dns-ionos` (without the need to execute `pip install` again). 
 
-It's important to note that the following arguments need also to be provided when developing locally in a virtual environment `--logs-dir`, `--config-dir`, `--work-dir`, otherwise the `certbot` will attempt to use the default global default folders for logging, configuration, and work. This may not work because of lacking permissions, so you may see errors like below if those arguments are not set:
+It's important to note that the following arguments need also to be provided when developing locally in a virtual environment `--logs-dir`, `--config-dir`, `--work-dir`, otherwise the `certbot` will attempt to use the global folders for logging, configuration, and work. This may not work because of the lack of permissions, so you may see errors like below if those arguments are not set:
 
 ```
 The following error was encountered:
@@ -69,4 +69,4 @@ The following error was encountered:
 Either run as root, or set --config-dir, --work-dir, and --logs-dir to writeable paths.
 ```
 
-As explained by the error message, to be able write to `/var/log/letsencrypt/`, root permissions are needed. However, when running as a root (e.g `sudo certbot`), the global `certbot` package will be used and not the one from the virtual environment. The solution is to set `--logs-dir`, `--config-dir`, and `--work-dir` to a different folder. 
+As explained by the error message, to be able write to `/var/log/letsencrypt/`, root permissions are needed. However, when running as a root (e.g `sudo certbot`), the global `certbot` package will be used and not the one from the virtual environment. The solution is to set `--logs-dir`, `--config-dir`, and `--work-dir` to a different folder for which the current user has write permissions.

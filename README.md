@@ -47,7 +47,7 @@ In the background, the plugin will try to find your zone. If found, it will crea
 
 # Support
 
-If you encounter any issues or have suggestions, please feel free to open an issue.
+If you encounter any issues or have suggestions, please feel free to open an [issue](https://github.com/ionos-cloud/certbot-dns-ionos-plugin/issues).
 
 # License
 

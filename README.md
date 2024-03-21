@@ -6,14 +6,14 @@
 
 The IONOS Cloud DNS Certbot Plugin automates SSL/TLS certificate creation for [IONOS Cloud](https://cloud.ionos.com/) zones. It implements the [Authenticator](https://github.com/certbot/certbot/blob/master/certbot/certbot/interfaces.py#L158) interface which is used by Certbot to perform a [DNS-01](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge) challenge.
 
-# Requirements:
+## Requirements
 
 To make use of the plugin, the following is needed:
 * an [IONOS Cloud](https://cloud.ionos.com/) account
 * an access token (a token can be obtained from the [DCD](https://dcd.ionos.com/) token manager or through the [Authentication API](https://api.ionos.com/docs/authentication/v1/))
 
 
-# Installation
+## Installation
 
 ```
 pip install certbot-dns-ionos
@@ -28,7 +28,7 @@ pip install certbot-dns-ionos
 | `--dns-ionos-propagation-seconds` | 120               | Configures the duration in seconds that certbot waits before querying the TXT record. (Default: 120)                                  |
 
 
-# Credentials file:
+## Credentials file
 
 As mentionned in the previous section, the `--dns-ionos-credentials` needs to point to an ini file containing the IONOS API access token. The file must contain the `ionos_dns_token` key with the value of the access token. 
 
@@ -37,23 +37,30 @@ dns_ionos_token=YOUR_API_JWT_ACCESS_TOKEN
 
 ```
 
-# Example Usage:
+## Example Usage
 
 ```
-certbot certonly --authenticator dns-ionos --dns-ionos-credentials /path/to/credentials.ini -d example.com
+certbot certonly \
+  --authenticator dns-ionos \
+  --dns-ionos-credentials /path/to/credentials.ini \
+  --dns-ionos-propagation-seconds 60 \
+  --agree-tos \
+  --rsa-key-size 4096 \
+  -d 'example.com' \
+  -d '*.example.com'
 ```
 
 In the background, the plugin will try to find your zone. If found, it will create a TXT record with for the DNS-01 challenge. At the end of the process, the TLS/SSL certificate is generated and the TXT record is deleted.
 
-# Support
+## Support
 
 If you encounter any issues or have suggestions, please feel free to open an [issue](https://github.com/ionos-cloud/certbot-dns-ionos-plugin/issues).
 
-# License
+## License
 
 This project is licensed under the Apache License 2.0 License - see the [LICENSE](https://github.com/ionos-cloud/certbot-dns-ionos-plugin/blob/init/LICENSE) file for details.
 
-# How to develop locally:
+## How to develop locally
 
 To develop and test the plugin locally, it is recommend to create a python [virtual environment](https://docs.python.org/3/library/venv.html). For example: `python -m venv .venv`
 

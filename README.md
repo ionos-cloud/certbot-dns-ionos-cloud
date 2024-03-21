@@ -23,7 +23,7 @@ pip install certbot-dns-ionos
 
 | Argument                            | Example     | Description                                                                                                                                                                     |
 |-------------------------------------|-------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--authenticator`                   | dns-ionos       | tells certbot which plugin use. `dns-ionos` should be used for this plugin.                                                                               | 
+| `--authenticator`                   | dns-ionos       | Tells certbot which plugin to use. `dns-ionos` should be used for this plugin.                                                                               | 
 | `--dns-ionos-credentials`         | ./credentials.ini | Denotes the directory path to the credentials file. Required. |
 | `--dns-ionos-propagation-seconds` | 120               | Configures the duration in seconds that certbot waits before querying the TXT record. (Default: 120)                                  |
 

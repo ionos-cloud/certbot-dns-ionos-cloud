@@ -4,7 +4,7 @@
 
 # certbot-dns-ionos:
 
-The IONOS Cloud DNS Certbot Plugin automates SSL/TLS certificate creation for [IONOS Cloud](https://cloud.ionos.com/) domains. It implements the [Authenticator](https://github.com/certbot/certbot/blob/master/certbot/certbot/interfaces.py#L158) interface which is used by Certbot to perform a [DNS-01](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge) challenge.
+The IONOS Cloud DNS Certbot Plugin automates SSL/TLS certificate creation for [IONOS Cloud](https://cloud.ionos.com/) zones. It implements the [Authenticator](https://github.com/certbot/certbot/blob/master/certbot/certbot/interfaces.py#L158) interface which is used by Certbot to perform a [DNS-01](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge) challenge.
 
 # Requirements:
 

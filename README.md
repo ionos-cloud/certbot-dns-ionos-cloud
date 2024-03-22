@@ -50,7 +50,7 @@ certbot certonly \
   -d '*.example.com'
 ```
 
-In the background, the plugin will try to find your zone. If found, it will create a TXT record with for the DNS-01 challenge. At the end of the process, the TLS/SSL certificate is generated and the TXT record is deleted.
+In the background, the plugin will try to find your zone. If found, it will create a TXT record for the [DNS-01](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge) challenge. At the end of the process, the TLS/SSL certificate is generated and the TXT record is deleted.
 
 ## Support
 

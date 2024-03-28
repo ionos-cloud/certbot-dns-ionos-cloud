@@ -187,7 +187,7 @@ class _IONOSClient(object):
         
         for record_item in records_response["items"]:
             record_item_properties = record_item["properties"]
-            if record_item_properties and record_item_properties["name"] == record_name:
+            if record_item_properties and record_item_properties.get("name") == record_name:
                 return record_item
             
         return None

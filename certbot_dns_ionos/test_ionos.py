@@ -8,6 +8,8 @@ from certbot_dns_ionos.ionos import _IONOSClient
 test_domain = "test_domain.de"
 test_record_name = "_acme-challenge.test_domain.de"
 test_record_content = "123456789"
+zone_id = "test"
+record_id = "12356"
 
 
 class TestIONOSClient(unittest.TestCase):
@@ -45,17 +47,63 @@ class TestIONOSClient(unittest.TestCase):
             self.assertEqual(str(context.exception), "Domain not known")
             mock_get.assert_called_once()
 
-    def test_find_zone_id_success(self):
-        #zone_id = "test"
-        #self.mock_response.json.return_value = {"items": [{"id": zone_id, "properties":{"zoneName": test_domain}}]}
-        #self.mock_response.status_code = 200
-        #self.mock_response.
-        #with patch("requests.get", return_value=self.mock_response) as mock_get:
-        #    zone_id = self.client._find_zone_id(test_domain)
-        #    self.assertEqual(zone_id, zone_id)
-        #    mock_get.assert_called_once()
-        pass
+    def test_add_txt_record_with_not_found_record_creates_record(self):        
+        get_zones_response = Mock()
+        get_zones_response.status_code = 200
+        get_zones_response.json.return_value = {"items": [{"id": zone_id, "properties":{"zoneName": test_domain}}]}
+                
+        get_records_response = Mock()
+        get_records_response.status_code = 202
+        get_records_response.json.return_value = {"items":[]}
+        
+        responses = [get_zones_response, get_records_response]
 
+        insert_response = Mock()
+        insert_response.status_code = 202
+
+        with patch('requests.get', side_effect=responses) as mock_get:
+            with patch("requests.post", return_value=insert_response) as mock_post:
+                self.client.add_txt_record(test_domain, test_record_name, test_record_content)
+                assert len(mock_get.mock_calls) == 2
+                mock_post.assert_called()
+
+
+    def test_add_txt_record_with_exisiting_record_same_content_does_nothing(self):
+        get_zones_response = Mock()
+        get_zones_response.status_code = 200
+        get_zones_response.json.return_value = {"items": [{"id": zone_id, "properties":{"zoneName": test_domain}}]}
+                
+        get_records_response = Mock()
+        get_records_response.status_code = 202
+        record_name_without_domain = test_record_name.replace("."+test_domain, "")
+        get_records_response.json.return_value = {"items":[{"id": record_id, "properties":{"name": record_name_without_domain, "content":test_record_content}}]}
+        
+        responses = [get_zones_response, get_records_response]
+
+        with patch('requests.get', side_effect=responses) as mock_get:
+                self.client.add_txt_record(test_domain, test_record_name, test_record_content)
+                assert len(mock_get.mock_calls) == 2
+
+    def test_add_txt_record_with_exisiting_record_different_updates_record(self):        
+        get_zones_response = Mock()
+        get_zones_response.status_code = 200
+        get_zones_response.json.return_value = {"items": [{"id": zone_id, "properties":{"zoneName": test_domain}}]}
+                
+        get_records_response = Mock()
+        get_records_response.status_code = 202
+        record_name_without_domain = test_record_name.replace("."+test_domain, "")
+        get_records_response.json.return_value = {"items":[{"id": record_id, "properties":{"name": record_name_without_domain, "content":"new content"}}]}
+        
+        responses = [get_zones_response, get_records_response]
+
+        update_response = Mock()
+        update_response.status_code = 202
+
+        with patch('requests.get', side_effect=responses) as mock_get:
+            with patch("requests.put", return_value=update_response) as mock_put:
+                self.client.add_txt_record(test_domain, test_record_name, test_record_content)
+                assert mock_get.call_count == 2
+                mock_put.assert_called()
 
 if __name__ == "__main__":
     unittest.main()

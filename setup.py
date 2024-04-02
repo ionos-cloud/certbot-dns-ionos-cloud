@@ -7,8 +7,7 @@ install_requires = [
     "certbot>=2.9.0",
     "setuptools",
     "requests",
-    #"mock",
-    #"requests-mock",
+    "mock",
 ]
 
 
@@ -30,5 +29,5 @@ setup(
             "dns-ionos = certbot_dns_ionos.ionos:Authenticator"
         ]
     },
-    test_suite="",
+    test_suite="certbot-dns-ionos",
 )

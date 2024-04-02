@@ -77,3 +77,7 @@ Either run as root, or set --config-dir, --work-dir, and --logs-dir to writeable
 ```
 
 As explained by the error message, to be able write to `/var/log/letsencrypt/`, root permissions are needed. However, when running as a root (e.g `sudo certbot`), the global `certbot` package will be used and not the one from the virtual environment. The solution is to set `--logs-dir`, `--config-dir`, and `--work-dir` to a different folder for which the current user has write permissions.
+
+## Testing
+
+unit tests can be run using: `make test`

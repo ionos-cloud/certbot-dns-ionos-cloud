@@ -64,7 +64,7 @@ class _IONOSClient(object):
 
     def __init__(self, token:str):
         logger.debug("creating IONOS Client")
-        self.headers = {"Authorization": "Bearer " + token}
+        self.headers = {"Authorization": f"Bearer {token}"}
 
         
     def _handle_response(self, resp: requests.Response):
@@ -96,13 +96,13 @@ class _IONOSClient(object):
         logger.debug("domain found: %s with id: %s", domain, zone_id)
         record = self.get_existing_txt_acme_record(zone_id, record_name_without_domain)
         if record is not None:
-            record_properties = record["properties"]
-            if record_properties["content"] == record_content:
-                logger.info("already there, id {0}".format(record["id"]))
+            record_properties = record.get("properties")
+            if record_properties.get("content") == record_content:
+                logger.info("already there, id {0}".format(record.get("id")))
                 return
             else:
-                logger.info("update {0}".format(record["id"]))
-                record_properties["content"] = record_content
+                logger.info("update {0}".format(record.get("id")))
+                record_properties.update({"content": record_content})
                 self._update_txt_record(
                     zone_id, record
                 )
@@ -125,11 +125,11 @@ class _IONOSClient(object):
         logger.debug("domain found: %s with id: %s", domain, zone_id)
         record = self.get_existing_txt_acme_record(zone_id, record_name.replace("."+domain, ""))
         if record is not None:
-            record_properties = record["properties"]
-            if record_properties["content"] == record_content:
-                logger.debug("delete TXT record: %s", record["id"])
+            record_properties = record.get("properties")
+            if record_properties.get("content") == record_content:
+                logger.debug("delete TXT record: %s", record.get("id"))
                 self._handle_response(
-            requests.delete(dns_api_base_url + "/zones/" + zone_id +"/records/"+record["id"], headers=self.headers))
+            requests.delete(f"{dns_api_base_url}/zones/{zone_id}/records/{record.get('id')}", headers=self.headers))
                 
 
 
@@ -138,14 +138,14 @@ class _IONOSClient(object):
                 "name":record_name, "type":"TXT", "content":record_content}}
         
         self._handle_response(
-            requests.post(dns_api_base_url + "/zones/" + zone_id +"/records", json=new_record, headers=self.headers))
+            requests.post(f"{dns_api_base_url}/zones/{zone_id}/records", json=new_record, headers=self.headers))
         logger.debug("create with payload: %s", new_record)
 
     def _update_txt_record(
         self, zone_id, record
     ):
         self._handle_response(
-            requests.put(dns_api_base_url + "/zones/" + zone_id +"/records/"+record["id"], json=record, headers=self.headers))
+            requests.put(f"{dns_api_base_url}/zones/{zone_id}/records/{record.get('id')}", json=record, headers=self.headers))
         logger.debug("update with payload: %s", record)
 
 
@@ -160,12 +160,12 @@ class _IONOSClient(object):
         """
 
         zones_response = self._handle_response(
-            requests.get(dns_api_base_url + "/zones", params={"filter.zoneName":domain}, headers=self.headers))
+            requests.get(f"{dns_api_base_url}/zones", params={"filter.zoneName":domain}, headers=self.headers))
         
-        for zone_item in zones_response["items"]:
-            zone_item_properties = zone_item["properties"]
-            if zone_item_properties and zone_item_properties["zoneName"] == domain:
-                return zone_item["id"]
+        for zone_item in zones_response.get("items"):
+            zone_item_properties = zone_item.get("properties")
+            if zone_item_properties and zone_item_properties.get("zoneName") == domain:
+                return zone_item.get("id")
             
         return None
 
@@ -181,12 +181,12 @@ class _IONOSClient(object):
 
         """
         records_response = self._handle_response(
-            requests.get(dns_api_base_url + "/records", 
+            requests.get(f"{dns_api_base_url}/records", 
                          params={"filter.zoneId": zone_id, 
                                  "filter.name": record_name}, headers=self.headers))
         
-        for record_item in records_response["items"]:
-            record_item_properties = record_item["properties"]
+        for record_item in records_response.get("items"):
+            record_item_properties = record_item.get("properties")
             if record_item_properties and record_item_properties.get("name") == record_name:
                 return record_item
             

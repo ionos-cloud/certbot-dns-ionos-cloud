@@ -8,7 +8,6 @@ install_requires = [
     "setuptools",
     "requests",
     "mock",
-    "requests-mock",
 ]
 
 

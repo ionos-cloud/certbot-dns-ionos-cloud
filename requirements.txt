@@ -1,0 +1,5 @@
+
+acme>=2.9.0
+certbot>=2.9.0
+setuptools
+requests

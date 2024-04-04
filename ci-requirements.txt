@@ -1,2 +1,4 @@
 mypy
 flake8
+#somehow mypy complains about this
+types-requests

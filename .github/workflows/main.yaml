@@ -22,8 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip install -r ci-requirements.txt
+          make install-dependencies
 
       - name: Lint and Test
         run: |

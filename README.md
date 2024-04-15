@@ -1,4 +1,4 @@
-[![Release](https://img.shields.io/github/v/release/ionos-cloud/certbot-dns-ionos-plugin.svg)](https://github.com/ionos-cloud/certbot-dns-ionos-plugin/releases/latest)
+[![Release](https://img.shields.io/github/v/release/ionos-cloud/certbot-dns-ionos-cloud.svg)](https://github.com/ionos-cloud/certbot-dns-ionos-cloud/releases/latest)
 
 ![Alt text](.github/IONOS.CLOUD.BLU.svg?raw=true "Title")
 
@@ -54,11 +54,11 @@ In the background, the plugin will try to find your zone. If found, it will crea
 
 ## Support
 
-If you encounter any issues or have suggestions, please feel free to open an [issue](https://github.com/ionos-cloud/certbot-dns-ionos-plugin/issues).
+If you encounter any issues or have suggestions, please feel free to open an [issue](https://github.com/ionos-cloud/certbot-dns-ionos-cloud/issues).
 
 ## License
 
-This project is licensed under the Apache License 2.0 License - see the [LICENSE](https://github.com/ionos-cloud/certbot-dns-ionos-plugin/blob/init/LICENSE) file for details.
+This project is licensed under the Apache License 2.0 License - see the [LICENSE](https://github.com/ionos-cloud/certbot-dns-ionos-cloud/blob/init/LICENSE) file for details.
 
 ## How to develop locally
 
@@ -81,3 +81,8 @@ As explained by the error message, to be able write to `/var/log/letsencrypt/`, 
 ## Testing
 
 unit tests can be run using: `make test`
+
+## Related Plugins
+
+It's important to note that this plugin targets IONOS [Cloud DNS service](https://cloud.ionos.com/network/cloud-dns). 
+IONOS offers a different service for registring domains, refered to as [IONOS core](https://www.ionos.com/domains/domain-names). For the latter, there is dedicated plugin managed by the community: [https://github.com/helgeerbe/certbot-dns-ionos](https://github.com/helgeerbe/certbot-dns-ionos)

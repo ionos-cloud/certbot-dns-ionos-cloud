@@ -15,7 +15,7 @@ setup(
     name="certbot-dns-ionos",
     version="0.1.0",
     description="Certbot DNS Authenticator plugin for IONOS",
-    url="https://github.com/ionos-cloud/certbot-dns-ionos-plugin",
+    url="https://github.com/ionos-cloud/certbot-dns-ionos-cloud",
     author="IONOS Cloud DNS team",
     author_email="paas-dns@ionos.com",
     license="Apache License 2.0",

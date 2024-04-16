@@ -17,7 +17,7 @@ with open(path.join(this_directory, "README.md")) as f:
     long_description = f.read()
 
 setup(
-    name="certbot-dns-ionos",
+    name="certbot-dns-ionos-cloud",
     version="0.1.0",
     description="Certbot DNS Authenticator plugin for IONOS",
     long_description=long_description,
@@ -50,5 +50,5 @@ setup(
             "dns-ionos = certbot_dns_ionos.ionos:Authenticator"
         ]
     },
-    test_suite="certbot-dns-ionos",
+    test_suite="certbot-dns-ionos-cloud",
 )

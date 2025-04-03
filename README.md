@@ -17,7 +17,7 @@ To make use of the plugin, the following is needed:
 ## Installation
 
 ```
-pip install certbot-dns-ionos
+pip install certbot-dns-ionos-cloud
 ```
 
 ## Arguments
@@ -47,8 +47,7 @@ certbot certonly \
   --dns-ionos-propagation-seconds 60 \
   --agree-tos \
   --rsa-key-size 4096 \
-  -d 'example.com' \
-  -d '*.example.com'
+  -d 'example.com'
 ```
 
 In the background, the plugin will try to find your zone. If found, it will create a TXT record for the [DNS-01](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge) challenge. At the end of the process, the TLS/SSL certificate is generated and the TXT record is deleted.

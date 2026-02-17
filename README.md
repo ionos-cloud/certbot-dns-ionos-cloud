@@ -31,7 +31,7 @@ pip install certbot-dns-ionos-cloud
 
 ## Credentials file
 
-As mentionned in the previous section, the `--dns-ionos-credentials` needs to point to an ini file containing the IONOS API access token. The file must contain the `ionos_dns_token` key with the value of the access token. 
+As mentioned in the previous section, the `--dns-ionos-credentials` needs to point to an ini file containing the IONOS API access token. The file must contain the `ionos_dns_token` key with the value of the access token. 
 
 ```
 dns_ionos_token=YOUR_API_JWT_ACCESS_TOKEN
@@ -85,4 +85,4 @@ unit tests can be run using: `make test`
 ## Related Plugins
 
 It's important to note that this plugin targets IONOS [Cloud DNS service](https://cloud.ionos.com/network/cloud-dns). 
-IONOS offers a different service for managing DNS zones, refered to as [IONOS Developer DNS API](https://developer.hosting.ionos.com/docs/dns). For the latter, there is dedicated plugin managed by the community: [https://github.com/helgeerbe/certbot-dns-ionos](https://github.com/helgeerbe/certbot-dns-ionos)
+IONOS offers a different service for managing DNS zones, referred to as [IONOS Developer DNS API](https://developer.hosting.ionos.com/docs/dns). For the latter, there is dedicated plugin managed by the community: [https://github.com/helgeerbe/certbot-dns-ionos](https://github.com/helgeerbe/certbot-dns-ionos)

@@ -47,7 +47,7 @@ setup(
     install_requires=install_requires,
     entry_points={
         "certbot.plugins": [
-            "dns-ionos = certbot_dns_ionos.ionos:Authenticator"
+            "dns-ionos-cloud = certbot_dns_ionos_cloud.ionos:Authenticator"
         ]
     },
     test_suite="certbot-dns-ionos-cloud",

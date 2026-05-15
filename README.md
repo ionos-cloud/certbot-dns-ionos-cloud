@@ -24,9 +24,9 @@ pip install certbot-dns-ionos-cloud
 
 | Argument                            | Example     | Description                                                                                                                                                                     |
 |-------------------------------------|-------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--authenticator`                   | dns-ionos       | Tells certbot which plugin to use. `dns-ionos` should be used for this plugin.                                                                               | 
-| `--dns-ionos-credentials`         | ./credentials.ini | Denotes the directory path to the credentials file. Required. |
-| `--dns-ionos-propagation-seconds` | 120               | Configures the duration in seconds that certbot waits before querying the TXT record. (Default: 120)                                  |
+| `--authenticator`                   | dns-ionos-cloud      | Tells certbot which plugin to use. `dns-ionos` should be used for this plugin.                                                                               | 
+| `--dns-ionos-cloud-credentials`         | ./credentials.ini | Denotes the directory path to the credentials file. Required. |
+| `--dns-ionos-cloud-propagation-seconds` | 120               | Configures the duration in seconds that certbot waits before querying the TXT record. (Default: 120)                                  |
 
 
 ## Credentials file
@@ -42,9 +42,9 @@ dns_ionos_token=YOUR_API_JWT_ACCESS_TOKEN
 
 ```
 certbot certonly \
-  --authenticator dns-ionos \
-  --dns-ionos-credentials /path/to/credentials.ini \
-  --dns-ionos-propagation-seconds 60 \
+  --authenticator dns-ionos-cloud \
+  --dns-ionos-cloud-credentials /path/to/credentials.ini \
+  --dns-ionos-cloud-propagation-seconds 60 \
   --agree-tos \
   --rsa-key-size 4096 \
   -d 'example.com'

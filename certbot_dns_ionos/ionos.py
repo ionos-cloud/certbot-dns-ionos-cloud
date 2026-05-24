@@ -89,8 +89,9 @@ class _IONOSClient(object):
         """
         # because the domain is appended by the API,
         # we remove it from it from the record name
-        record_name_without_domain = record_name.replace("." + domain, "")
-        zone_id = self._find_zone_id(domain)
+        root_domain = ".".join(domain.split(".")[-2:])
+        record_name_without_domain = record_name.replace("." + root_domain, "")
+        zone_id = self._find_zone_id(root_domain)
         if zone_id is None:
             raise errors.PluginError("Domain not known")
         logger.debug("domain found: %s with id: %s", domain, zone_id)
@@ -119,12 +120,13 @@ class _IONOSClient(object):
         :raises certbot.errors.PluginError: if an error occurs communicating
         with the IONOS API
         """
-        zone_id = self._find_zone_id(domain)
+        root_domain = ".".join(domain.split(".")[-2:])
+        zone_id = self._find_zone_id(root_domain)
         if zone_id is None:
             raise errors.PluginError("Domain not known")
         logger.debug("domain found: %s with id: %s", domain, zone_id)
         record = self.get_existing_txt_acme_record(
-            zone_id, record_name.replace("." + domain, "")
+            zone_id, record_name.replace("." + root_domain, "")
         )
         if record is not None:
             record_properties = record.get("properties")

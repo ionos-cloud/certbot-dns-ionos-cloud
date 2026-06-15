@@ -18,7 +18,7 @@ with open(path.join(this_directory, "README.md")) as f:
 
 setup(
     name="certbot-dns-ionos-cloud",
-    version="2.0.0",
+    version="2.0.0-1",
     description="Certbot DNS Authenticator plugin for IONOS",
     long_description=long_description,
     long_description_content_type="text/markdown",

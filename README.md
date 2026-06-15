@@ -1,5 +1,5 @@
 ![Release](https://img.shields.io/github/v/release/ionos-cloud/certbot-dns-ionos-cloud.svg)
-[![PyPI version](https://img.shields.io/pypi/v/ionoscloud-dns)](https://pypi.org/project/certbot-dns-ionos-cloud/)
+[![PyPI version](https://img.shields.io/pypi/v/certbot-dns-ionos-cloud)](https://pypi.org/project/certbot-dns-ionos-cloud/)
 
 ![Alt text](https://raw.githubusercontent.com/ionos-cloud/certbot-dns-ionos-cloud/main/.github/IONOS.CLOUD.BLU.svg)
 

@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch, Mock
 
 from certbot import errors
-from certbot_dns_ionos.ionos import _IONOSClient
+from certbot_dns_ionos_cloud.ionos import _IONOSClient
 
 
 test_domain = "test_domain.de"

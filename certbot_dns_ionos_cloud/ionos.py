@@ -8,10 +8,12 @@ import requests
 from certbot import errors
 from certbot.plugins import dns_common
 from typing import Any
+from base64 import b64encode
 
 logger = logging.getLogger(__name__)
 
 dns_api_base_url = "https://dns.de-fra.ionos.com"
+auth_api_generate_token_url = "https://api.ionos.com/auth/v1/tokens/generate"
 
 
 class Authenticator(dns_common.DNSAuthenticator):
@@ -34,24 +36,30 @@ class Authenticator(dns_common.DNSAuthenticator):
     def more_info(self) -> str:
         return (
             "This plugin configures a DNS TXT record to respond to a dns-01"
-            + " challenge using the IONOS REST API."
+            + " challenge using the IONOS Cloud DNS API."
         )
+
+    def prepare(self) -> None:
+        self.ionos_client = _IONOSClient(self.credentials.conf("token"), 
+                             self.credentials.conf("username"), self.credentials.conf("password"))
 
     def _setup_credentials(self) -> None:
         self.credentials = self._configure_credentials(
             "credentials",
-            "IONOS API credentials INI file. Only Bearer token"
+            "IONOS API credentials INI file. Both token and username/password"
             + " authentication is supported",
             {"token": "access token for the IONOS API"},
+            {"username": "username of the bot account"},
+            {"password": "password of the bot account"},
         )
 
     def _perform(self, domain, validation_name, validation) -> None:
-        _IONOSClient(self.credentials.conf("token")).add_txt_record(
+        self.ionos_client.add_txt_record(
             domain, validation_name, validation
         )
 
     def _cleanup(self, domain, validation_name, validation) -> None:
-        _IONOSClient(self.credentials.conf("token")).del_txt_record(
+        self.ionos_client.del_txt_record(
             domain, validation_name, validation
         )
 
@@ -61,9 +69,20 @@ class _IONOSClient(object):
     Encapsulates all communication with the IONOS Cloud DNS API.
     """
 
-    def __init__(self, token: str):
+    def __init__(self, token: str, username: str, password: str):
         logger.debug("creating IONOS Client")
+        if token == "":
+            logger.info("token not provided, attempting to use username/password authentication")
+            auth_response = self._handle_response(
+                requests.get(auth_api_generate_token_url,
+                             params={"ttl", "3600"},
+                            auth=(username, password),      
+                            )
+            )
+            token = auth_response["token"]
+
         self.headers = {"Authorization": f"Bearer {token}"}
+        
 
     def _handle_response(self, resp: requests.Response) -> Any:
         if resp.status_code != 200 and resp.status_code != 202:

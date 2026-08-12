@@ -3,7 +3,7 @@ from unittest.mock import patch, Mock, call
 
 from certbot import errors
 from certbot_dns_ionos_cloud.ionos import _IONOSClient
-from certbot_dns_ionos_cloud.ionos import dns_api_base_url
+from certbot_dns_ionos_cloud.ionos import dns_api_base_url, auth_api_generate_token_url
 
 
 test_domain = "test_domain.de"
@@ -13,13 +13,53 @@ test_record_content = "123456789"
 zone_id = "test"
 record_id = "12356"
 token = "test_token"
+generated_token = "generated_token"
 auth_header={"Authorization":"Bearer " + token}
+username = "test_username"
+password = "test_password"
 
 
 class TestIONOSClient(unittest.TestCase):
     def setUp(self):
         self.client = _IONOSClient("test_token", "", "")
         self.mock_response = Mock()
+
+    def test_initialization_with_empty_username_raises_exception(self):
+        with self.assertRaises(errors.PluginError) as context:
+            _IONOSClient("", "", password)
+            self.assertEqual(
+                str(context.exception), "missing username or password: when no token is provided, a valid username and password should be provided"
+            )
+
+    def test_initialization_with_empty_username_raises_exception(self):
+        with self.assertRaises(errors.PluginError) as context:
+            _IONOSClient("", "", password)
+            self.assertEqual(
+                str(context.exception), "missing username or password: when no token is provided, a valid username and password should be provided"
+            )
+
+    def test_initialization_calls_auth_api_with_non_ok_status_raises_exception(self):
+        self.mock_response.status_code = 401
+
+        with patch("requests.get", return_value=self.mock_response) as mock_get:
+            with self.assertRaises(errors.PluginError) as context:
+                _IONOSClient("", username, password)
+                self.assertEqual(
+                    str(context.exception), "Received non OK status from IONOS API 401"
+                )
+            mock_get.assert_called_once_with(f"{auth_api_generate_token_url}",
+                                       auth=(username, password), params={"ttl", "3600"})
+    
+
+    def test_initialization_with_username_password_calls_auth_api(self):
+        self.mock_response.status_code = 200
+        self.mock_response.json.return_value = {"token": generated_token}
+
+        with patch("requests.get", return_value=self.mock_response) as mock_get:
+            client = _IONOSClient("", username, password)
+            mock_get.assert_called_once_with(f"{auth_api_generate_token_url}",
+                                       auth=(username, password), params={"ttl", "3600"})
+            self.assertEqual(client.headers,  {"Authorization": "Bearer " + generated_token})
 
     def test_add_txt_record_with_non_ok_result_raises_exception(self):
         self.mock_response.status_code = 401

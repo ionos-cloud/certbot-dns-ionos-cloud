@@ -72,6 +72,8 @@ class _IONOSClient(object):
     def __init__(self, token: str, username: str, password: str):
         logger.debug("creating IONOS Client")
         if token == "":
+            if username == "" or password == "":
+                raise errors.PluginError("missing username or password: when no token is provided, a valid username and password should be provided")
             logger.info("token not provided, attempting to use username/password authentication")
             auth_response = self._handle_response(
                 requests.get(auth_api_generate_token_url,

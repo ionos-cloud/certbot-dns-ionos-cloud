@@ -8,7 +8,6 @@ import requests
 from certbot import errors
 from certbot.plugins import dns_common
 from typing import Any
-from base64 import b64encode
 
 logger = logging.getLogger(__name__)
 
@@ -40,28 +39,29 @@ class Authenticator(dns_common.DNSAuthenticator):
         )
 
     def prepare(self) -> None:
-        self.ionos_client = _IONOSClient(self.credentials.conf("token"), 
-                             self.credentials.conf("username"), self.credentials.conf("password"))
+        self.ionos_client = _IONOSClient(
+            self.credentials.conf("token"),
+            self.credentials.conf("username"),
+            self.credentials.conf("password"),
+        )
 
     def _setup_credentials(self) -> None:
         self.credentials = self._configure_credentials(
             "credentials",
             "IONOS API credentials INI file. Both token and username/password"
             + " authentication is supported",
-            {"token": "access token for the IONOS API"},
-            {"username": "username of the bot account"},
-            {"password": "password of the bot account"},
+            {
+                "token": "access token for the IONOS API",
+                "username": "username of the bot account",
+                "password": "password of the bot account",
+            },
         )
 
     def _perform(self, domain, validation_name, validation) -> None:
-        self.ionos_client.add_txt_record(
-            domain, validation_name, validation
-        )
+        self.ionos_client.add_txt_record(domain, validation_name, validation)
 
     def _cleanup(self, domain, validation_name, validation) -> None:
-        self.ionos_client.del_txt_record(
-            domain, validation_name, validation
-        )
+        self.ionos_client.del_txt_record(domain, validation_name, validation)
 
 
 class _IONOSClient(object):
@@ -73,18 +73,23 @@ class _IONOSClient(object):
         logger.debug("creating IONOS Client")
         if token == "":
             if username == "" or password == "":
-                raise errors.PluginError("missing username or password: when no token is provided, a valid username and password should be provided")
-            logger.info("token not provided, attempting to use username/password authentication")
+                raise errors.PluginError(
+                    "missing username or password: when no token is provided,"
+                    + " a valid username and password should be provided"
+                )
+            logger.info(
+                "token not provided, attempting to use username/password authentication"
+            )
             auth_response = self._handle_response(
-                requests.get(auth_api_generate_token_url,
-                             params={"ttl", "3600"},
-                            auth=(username, password),      
-                            )
+                requests.get(
+                    auth_api_generate_token_url,
+                    params={"ttl": "3600"},
+                    auth=(username, password),
+                )
             )
             token = auth_response["token"]
 
         self.headers = {"Authorization": f"Bearer {token}"}
-        
 
     def _handle_response(self, resp: requests.Response) -> Any:
         if resp.status_code != 200 and resp.status_code != 202:

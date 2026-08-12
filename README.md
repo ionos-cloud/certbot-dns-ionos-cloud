@@ -36,7 +36,7 @@ pip install certbot-dns-ionos-cloud
 
 ## Credentials file
 
-As mentioned in the previous section, the `--dns-ionos-cloud-credentials` needs to point to an ini file containing the IONOS API access token. The file must contain either the `ionos_dns_cloud_token` key with the value of the access token or the keys `ionos_dns_cloud_username`, `ionos_dns_cloud_password` with the values of the bot username and password, repectively. 
+As mentioned in the previous section, the `--dns-ionos-cloud-credentials` needs to point to an ini file containing the IONOS API access token. The file must contain either the `ionos_dns_cloud_token` key with the value of the access token or the keys `ionos_dns_cloud_username`, `ionos_dns_cloud_password` with the values of the bot username and password, respectively. 
 
 ```
 ionos_dns_cloud_token=YOUR_API_JWT_ACCESS_TOKEN

@@ -26,20 +26,20 @@ class TestIONOSClient(unittest.TestCase):
     def test_initialization_with_empty_username_raises_exception(self):
         with self.assertRaises(errors.PluginError) as context:
             _IONOSClient("", "", password)
-            self.assertEqual(
-                str(context.exception),
-                "missing username or password: when no token is provided,"
-                + " a valid username and password should be provided",
-            )
+        self.assertEqual(
+            str(context.exception),
+            "missing username or password: when no token is provided,"
+            + " a valid username and password should be provided",
+        )
 
     def test_initialization_with_empty_password_raises_exception(self):
         with self.assertRaises(errors.PluginError) as context:
             _IONOSClient("", "", password)
-            self.assertEqual(
-                str(context.exception),
-                "missing username or password: when no token is provided,"
-                + " a valid username and password should be provided",
-            )
+        self.assertEqual(
+            str(context.exception),
+            "missing username or password: when no token is provided,"
+            + " a valid username and password should be provided",
+        )
 
     def test_initialization_calls_auth_api_with_non_ok_status_raises_exception(self):
         self.mock_response.status_code = 401
@@ -47,9 +47,9 @@ class TestIONOSClient(unittest.TestCase):
         with patch("requests.get", return_value=self.mock_response) as mock_get:
             with self.assertRaises(errors.PluginError) as context:
                 _IONOSClient("", username, password)
-                self.assertEqual(
-                    str(context.exception), "Received non OK status from IONOS API 401"
-                )
+            self.assertEqual(
+                str(context.exception), "Received non OK status from IONOS API 401"
+            )
             mock_get.assert_called_once_with(
                 f"{auth_api_generate_token_url}",
                 auth=(username, password),

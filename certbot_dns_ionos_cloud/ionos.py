@@ -15,6 +15,14 @@ dns_api_base_url = "https://dns.de-fra.ionos.com"
 auth_api_generate_token_url = "https://api.ionos.com/auth/v1/tokens/generate"
 
 
+def validate_credentials(creds_config: dns_common.CredentialsConfiguration) -> None:
+    if creds_config.conf("token") != None:
+        creds_config.require({"token":"access token for the IONOS API"})
+    else:
+        creds_config.require({"username": "username of the bot account"})
+        creds_config.require({"password": "password of the bot account"})
+
+
 class Authenticator(dns_common.DNSAuthenticator):
     """DNS Authenticator for IONOS
 
@@ -38,23 +46,18 @@ class Authenticator(dns_common.DNSAuthenticator):
             + " challenge using the IONOS Cloud DNS API."
         )
 
-    def prepare(self) -> None:
-        self.ionos_client = _IONOSClient(
-            self.credentials.conf("token"),
-            self.credentials.conf("username"),
-            self.credentials.conf("password"),
-        )
-
     def _setup_credentials(self) -> None:
         self.credentials = self._configure_credentials(
             "credentials",
             "IONOS API credentials INI file. Both token and username/password"
             + " authentication is supported",
-            {
-                "token": "access token for the IONOS API",
-                "username": "username of the bot account",
-                "password": "password of the bot account",
-            },
+            {},
+            validate_credentials
+        )
+        self.ionos_client = _IONOSClient(
+            self.credentials.conf("token"),
+            self.credentials.conf("username"),
+            self.credentials.conf("password"),
         )
 
     def _perform(self, domain, validation_name, validation) -> None:
@@ -71,8 +74,8 @@ class _IONOSClient(object):
 
     def __init__(self, token: str, username: str, password: str):
         logger.debug("creating IONOS Client")
-        if token == "":
-            if username == "" or password == "":
+        if token is None or token == "":
+            if username is None or username == "" or password is None or password == "":
                 raise errors.PluginError(
                     "missing username or password: when no token is provided,"
                     + " a valid username and password should be provided"

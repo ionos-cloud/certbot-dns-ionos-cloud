@@ -16,8 +16,8 @@ auth_api_generate_token_url = "https://api.ionos.com/auth/v1/tokens/generate"
 
 
 def validate_credentials(creds_config: dns_common.CredentialsConfiguration) -> None:
-    if creds_config.conf("token") != None:
-        creds_config.require({"token":"access token for the IONOS API"})
+    if creds_config.conf("token") is not None:
+        creds_config.require({"token": "access token for the IONOS API"})
     else:
         creds_config.require({"username": "username of the bot account"})
         creds_config.require({"password": "password of the bot account"})
@@ -52,7 +52,7 @@ class Authenticator(dns_common.DNSAuthenticator):
             "IONOS API credentials INI file. Both token and username/password"
             + " authentication is supported",
             {},
-            validate_credentials
+            validate_credentials,
         )
         self.ionos_client = _IONOSClient(
             self.credentials.conf("token"),

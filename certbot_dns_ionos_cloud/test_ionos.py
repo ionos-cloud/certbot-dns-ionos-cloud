@@ -34,7 +34,7 @@ class TestIONOSClient(unittest.TestCase):
 
     def test_initialization_with_empty_token_and_empty_password_raises_exception(self):
         with self.assertRaises(errors.PluginError) as context:
-            _IONOSClient("", "", password)
+            _IONOSClient("", username, "")
         self.assertEqual(
             str(context.exception),
             "missing username or password: when no token is provided,"
@@ -52,7 +52,7 @@ class TestIONOSClient(unittest.TestCase):
 
     def test_initialization_with_none_token_and_empty_password_raises_exception(self):
         with self.assertRaises(errors.PluginError) as context:
-            _IONOSClient(None, "", password)
+            _IONOSClient(None, username, "")
         self.assertEqual(
             str(context.exception),
             "missing username or password: when no token is provided,"

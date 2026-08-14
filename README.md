@@ -40,10 +40,14 @@ As mentioned in the previous section, the `--dns-ionos-cloud-credentials` needs 
 
 ```
 dns_ionos_cloud_token=YOUR_API_JWT_ACCESS_TOKEN
+```
+
+or 
+
+```
 dns_ionos_cloud_username=THE_BOT_ACCOUNT_USERNAME
 dns_ionos_cloud_password=THE_BOT_ACCOUNT_PASSWORD
 ```
-
 ## Example Usage
 
 ```

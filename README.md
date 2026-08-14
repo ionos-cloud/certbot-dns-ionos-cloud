@@ -13,6 +13,12 @@ To make use of the plugin, the following is needed:
 * an [IONOS Cloud](https://cloud.ionos.com/) account
 * an access token (a token can be obtained from the [DCD](https://dcd.ionos.com/) token manager or through the [Authentication API](https://api.ionos.com/docs/authentication/v1/))
 
+## Authentication Methods
+
+Both username/password and token authentication are supported. The username/password method has the advantage of not requiring the user to intervene periodically. If a token is used, it falls under the responsibility of the user to renew the token periodically (IONOS tokens can have a maximum ttl of 365 days). Regardless of the method used, it is highly recommended to scope the privileges to the DNS management only. This can be done by creating a new IAM user under your main contract, and scoping the privileges to "Access and manage DNS". More details on how to create a bot user can be found [here](https://github.com/ionos-cloud/cert-manager-webhook-ionos-cloud/blob/main/docs/create-bot-user.md)
+
+> [!IMPORTANT]  
+> It is not recommended to use the credentials of the root/Admin account. 
 
 ## Installation
 
@@ -30,13 +36,18 @@ pip install certbot-dns-ionos-cloud
 
 ## Credentials file
 
-As mentioned in the previous section, the `--dns-ionos-cloud-credentials` needs to point to an ini file containing the IONOS API access token. The file must contain the `ionos_dns_cloud_token` key with the value of the access token. 
+As mentioned in the previous section, the `--dns-ionos-cloud-credentials` needs to point to an ini file containing the IONOS API access token. The file must contain either the `dns_ionos_cloud_token` key with the value of the access token or the keys `dns_ionos_cloud_username`, `dns_ionos_cloud_password` with the values of the bot username and password, respectively. 
 
 ```
-dns_ionos_token=YOUR_API_JWT_ACCESS_TOKEN
-
+dns_ionos_cloud_token=YOUR_API_JWT_ACCESS_TOKEN
 ```
 
+or 
+
+```
+dns_ionos_cloud_username=THE_BOT_ACCOUNT_USERNAME
+dns_ionos_cloud_password=THE_BOT_ACCOUNT_PASSWORD
+```
 ## Example Usage
 
 ```
